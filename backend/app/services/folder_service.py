@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.models.folder import Folder
 from app.schemas.folder import FolderCreate, FolderUpdate
-
+from app.services.activity_service import create_activity
 
 def get_all_folders(db: Session):
     return (
@@ -34,6 +34,11 @@ def create_folder(
     db.commit()
     db.refresh(folder)
 
+    create_activity(
+        db,
+        f'Created folder "{folder.name}"',
+    )
+
     return folder
 
 
@@ -42,10 +47,17 @@ def update_folder(
     folder: Folder,
     data: FolderUpdate,
 ):
+    old_name = folder.name
+
     folder.name = data.name
 
     db.commit()
     db.refresh(folder)
+
+    create_activity(
+        db,
+        f'Renamed folder "{old_name}" to "{folder.name}"',
+    )
 
     return folder
 
@@ -54,5 +66,12 @@ def delete_folder(
     db: Session,
     folder: Folder,
 ):
+    folder_name = folder.name
+
     db.delete(folder)
     db.commit()
+
+    create_activity(
+        db,
+        f'Deleted folder "{folder_name}"',
+    )

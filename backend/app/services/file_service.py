@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.models.file import File
 from app.schemas.file import FileCreate, FileUpdate
+from app.services.activity_service import create_activity
 
 
 def get_all_files(db: Session):
@@ -46,6 +47,11 @@ def create_file(db: Session, data: FileCreate):
     db.commit()
     db.refresh(file)
 
+    create_activity(
+        db,
+        f'Created file "{file.filename}"',
+    )
+
     return file
 
 
@@ -54,10 +60,17 @@ def update_file(
     file: File,
     data: FileUpdate,
 ):
+    old_name = file.filename
+
     file.filename = data.filename
 
     db.commit()
     db.refresh(file)
+
+    create_activity(
+        db,
+        f'Renamed file "{old_name}" to "{file.filename}"',
+    )
 
     return file
 
@@ -66,5 +79,12 @@ def delete_file(
     db: Session,
     file: File,
 ):
+    filename = file.filename
+
     db.delete(file)
     db.commit()
+
+    create_activity(
+        db,
+        f'Deleted file "{filename}"',
+    )
