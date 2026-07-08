@@ -1,7 +1,6 @@
 import uuid
 
 from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
 from sqlalchemy import String
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped
@@ -16,14 +15,11 @@ class Folder(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         primary_key=True,
         default=uuid.uuid4,
-    )
-
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("users.id"),
-    )
+    )    
 
     name: Mapped[str] = mapped_column(
         String(100),
+        nullable=False,
     )
 
     created_at: Mapped[DateTime] = mapped_column(
@@ -36,7 +32,8 @@ class Folder(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
-
-    user = relationship("User", back_populates="folders")
-
-    files = relationship("File", back_populates="folder")
+    
+    files = relationship("File",
+        back_populates="folder",
+        cascade="all, delete-orphan", 
+    )    
