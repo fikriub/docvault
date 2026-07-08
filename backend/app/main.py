@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.routers.folder import router as folder_router
 from app.routers.health import router as health_router
 
 app = FastAPI(
@@ -8,6 +9,7 @@ app = FastAPI(
 )
 
 app.include_router(health_router)
+app.include_router(folder_router)
 
 @app.get("/")
 def root():
