@@ -1,0 +1,70 @@
+from uuid import UUID
+
+from sqlalchemy.orm import Session
+
+from app.models.file import File
+from app.schemas.file import FileCreate, FileUpdate
+
+
+def get_all_files(db: Session):
+    return (
+        db.query(File)
+        .order_by(File.created_at.desc())
+        .all()
+    )
+
+
+def get_file(db: Session, file_id: UUID):
+    return (
+        db.query(File)
+        .filter(File.id == file_id)
+        .first()
+    )
+
+
+def search_files(db: Session, keyword: str):
+    return (
+        db.query(File)
+        .filter(File.filename.ilike(f"%{keyword}%"))
+        .order_by(File.created_at.desc())
+        .all()
+    )
+
+
+def create_file(db: Session, data: FileCreate):
+    file = File(
+        folder_id=data.folder_id,
+        filename=data.filename,
+        s3_key=data.s3_key,
+        size=data.size,
+        mime_type=data.mime_type,
+        checksum=data.checksum,
+        status="processing",
+    )
+
+    db.add(file)
+    db.commit()
+    db.refresh(file)
+
+    return file
+
+
+def update_file(
+    db: Session,
+    file: File,
+    data: FileUpdate,
+):
+    file.filename = data.filename
+
+    db.commit()
+    db.refresh(file)
+
+    return file
+
+
+def delete_file(
+    db: Session,
+    file: File,
+):
+    db.delete(file)
+    db.commit()
