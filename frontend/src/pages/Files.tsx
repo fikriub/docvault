@@ -1,9 +1,7 @@
-function Files() {
+export default function Files() {
     return (
-        <h1 className="text-3xl font-bold">
+        <div>
             Files
-        </h1>
+        </div>
     );
 }
-
-export default Files;
