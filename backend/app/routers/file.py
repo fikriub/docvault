@@ -28,10 +28,14 @@ from app.services.file_service import (
     search_files,
     update_file,
     upload_file,
+    file_exists,
 )
 
 from app.database.session import SessionLocal
-from app.services.storage_service import process_uploaded_file
+from app.services.storage_service import (
+    process_uploaded_file,
+    build_file_response,
+)
 
 
 router = APIRouter(
@@ -180,4 +184,59 @@ def remove_file(
     delete_file(
         db,
         file,
+    )
+
+@router.get(
+    "/{file_id}/download",
+)
+def download_file(
+    file_id: UUID,
+    db: Session = Depends(get_db),
+):
+    file = get_file(
+        db,
+        file_id,
+    )
+
+    if file is None:
+        raise HTTPException(
+            status_code=404,
+            detail="File not found",
+        )
+
+    if not file_exists(file):
+        raise HTTPException(
+            status_code=404,
+            detail="Physical file not found",
+        )
+
+    return build_file_response(file)
+
+@router.get(
+    "/{file_id}/preview",
+)
+def preview_file(
+    file_id: UUID,
+    db: Session = Depends(get_db),
+):
+    file = get_file(
+        db,
+        file_id,
+    )
+
+    if file is None:
+        raise HTTPException(
+            status_code=404,
+            detail="File not found",
+        )
+
+    if not file_exists(file):
+        raise HTTPException(
+            status_code=404,
+            detail="Physical file not found",
+        )
+
+    return build_file_response(
+        file,
+        inline=True,
     )

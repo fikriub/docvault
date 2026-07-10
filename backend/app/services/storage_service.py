@@ -10,6 +10,7 @@ from app.models.file import File
 from app.services.activity_service import create_activity
 from app.utils.file_utils import UPLOAD_DIR
 
+from fastapi.responses import FileResponse
 
 def save_file(upload_file: UploadFile):
     extension = Path(upload_file.filename).suffix
@@ -57,4 +58,29 @@ def process_uploaded_file(
     create_activity(
         db,
         f'Finished processing "{file.filename}"',
+    )
+
+def get_file_path(stored_name: str):
+    return UPLOAD_DIR / stored_name
+
+
+def build_file_response(
+    file: File,
+    inline: bool = False,
+):
+    path = get_file_path(file.s3_key)
+
+    if inline:
+        disposition = "inline"
+    else:
+        disposition = "attachment"
+
+    return FileResponse(
+        path=path,
+        filename=file.filename,
+        media_type=file.mime_type,
+        headers={
+            "Content-Disposition":
+                f'{disposition}; filename="{file.filename}"'
+        },
     )

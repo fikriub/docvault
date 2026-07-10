@@ -9,6 +9,8 @@ from app.models.folder import Folder
 
 import hashlib
 
+from pathlib import Path
+
 from fastapi import UploadFile
 
 from app.services.storage_service import (
@@ -135,3 +137,8 @@ def upload_file(
     )
 
     return file
+
+def file_exists(file: File):
+    path = Path("uploads") / file.s3_key
+
+    return path.exists()
