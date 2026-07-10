@@ -16,7 +16,10 @@ from app.services.file_service import (
     get_file,
     search_files,
     update_file,
+    upload_file,
 )
+
+from fastapi import File, Form, UploadFile
 
 router = APIRouter(
     prefix="/api/files",
@@ -43,6 +46,23 @@ def search(
     db: Session = Depends(get_db),
 ):
     return search_files(db, q)
+
+
+@router.post(
+    "/upload",
+    response_model=FileResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def upload_new_file(
+    folder_id: UUID = Form(...),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    return upload_file(
+        db,
+        folder_id,
+        file,
+    )
 
 
 @router.get(

@@ -6,6 +6,11 @@ from app.models.file import File
 from app.schemas.file import FileCreate, FileUpdate
 from app.services.activity_service import create_activity
 
+import hashlib
+
+from fastapi import UploadFile
+
+from app.services.storage_service import save_file
 
 def get_all_files(db: Session):
     return (
@@ -88,3 +93,39 @@ def delete_file(
         db,
         f'Deleted file "{filename}"',
     )
+
+
+def upload_file(
+    db: Session,
+    folder_id: UUID,
+    upload: UploadFile,
+):
+    stored_name = save_file(upload)
+
+    upload.file.seek(0)
+    checksum = hashlib.md5(
+        upload.file.read()
+    ).hexdigest()
+
+    upload.file.seek(0)
+
+    file = File(
+        folder_id=folder_id,
+        filename=upload.filename,
+        s3_key=stored_name,
+        size=upload.size or 0,
+        mime_type=upload.content_type or "application/octet-stream",
+        checksum=checksum,
+        status="processing",
+    )
+
+    db.add(file)
+    db.commit()
+    db.refresh(file)
+
+    create_activity(
+        db,
+        f'Uploaded file "{file.filename}"',
+    )
+
+    return file

@@ -17,6 +17,21 @@ class FileUpdate(BaseModel):
     filename: str
 
 
+class FileUploadResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    folder_id: UUID
+    filename: str
+    s3_key: str
+    size: int
+    mime_type: str
+    checksum: str
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+
 class FileResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
