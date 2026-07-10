@@ -101,13 +101,7 @@ def upload_file(
     upload: UploadFile,
 ):
     stored_name = save_file(upload)
-
-    upload.file.seek(0)
-    checksum = hashlib.md5(
-        upload.file.read()
-    ).hexdigest()
-
-    upload.file.seek(0)
+    
 
     file = File(
         folder_id=folder_id,
@@ -115,7 +109,7 @@ def upload_file(
         s3_key=stored_name,
         size=upload.size or 0,
         mime_type=upload.content_type or "application/octet-stream",
-        checksum=checksum,
+        checksum="",
         status="processing",
     )
 

@@ -21,11 +21,31 @@ from app.services.file_service import (
 
 from fastapi import File, Form, UploadFile
 
+from fastapi import BackgroundTasks
+
+from app.database.session import SessionLocal
+from app.services.storage_service import process_uploaded_file
+
+
 router = APIRouter(
     prefix="/api/files",
     tags=["Files"],
 )
 
+
+def process_file_background(
+    file_id,
+):
+    db = SessionLocal()
+
+    try:
+        process_uploaded_file(
+            db,
+            file_id,
+        )
+    finally:
+        db.close()
+        
 
 @router.get(
     "",
@@ -54,15 +74,23 @@ def search(
     status_code=status.HTTP_201_CREATED,
 )
 def upload_new_file(
+    background_tasks: BackgroundTasks,
     folder_id: UUID = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
-    return upload_file(
+    uploaded = upload_file(
         db,
         folder_id,
         file,
     )
+
+    background_tasks.add_task(
+        process_file_background,
+        uploaded.id,
+    )
+
+    return uploaded
 
 
 @router.get(
