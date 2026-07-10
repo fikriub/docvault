@@ -5,12 +5,16 @@ from sqlalchemy.orm import Session
 from app.models.file import File
 from app.schemas.file import FileCreate, FileUpdate
 from app.services.activity_service import create_activity
+from app.models.folder import Folder
 
 import hashlib
 
 from fastapi import UploadFile
 
-from app.services.storage_service import save_file
+from app.services.storage_service import (
+    process_uploaded_file,
+    save_file,
+)
 
 def get_all_files(db: Session):
     return (
@@ -100,14 +104,22 @@ def upload_file(
     folder_id: UUID,
     upload: UploadFile,
 ):
-    stored_name = save_file(upload)
-    
+    stored_name, file_size = save_file(upload)
+
+    folder = (
+        db.query(Folder)
+        .filter(Folder.id == folder_id)
+        .first()
+    )
+
+    if folder is None:
+        raise ValueError("Folder not found")
 
     file = File(
         folder_id=folder_id,
         filename=upload.filename,
         s3_key=stored_name,
-        size=upload.size or 0,
+        size=file_size,
         mime_type=upload.content_type or "application/octet-stream",
         checksum="",
         status="processing",

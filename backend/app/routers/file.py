@@ -1,7 +1,18 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
+
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File as FastAPIFile,
+    Form,
+    HTTPException,
+    Query,
+    UploadFile,
+    status,
+)
 
 from app.database.session import get_db
 from app.schemas.file import (
@@ -18,10 +29,6 @@ from app.services.file_service import (
     update_file,
     upload_file,
 )
-
-from fastapi import File, Form, UploadFile
-
-from fastapi import BackgroundTasks
 
 from app.database.session import SessionLocal
 from app.services.storage_service import process_uploaded_file
@@ -76,14 +83,20 @@ def search(
 def upload_new_file(
     background_tasks: BackgroundTasks,
     folder_id: UUID = Form(...),
-    file: UploadFile = File(...),
+    file: UploadFile = FastAPIFile(...),
     db: Session = Depends(get_db),
 ):
-    uploaded = upload_file(
-        db,
-        folder_id,
-        file,
-    )
+    try:
+        uploaded = upload_file(
+            db,
+            folder_id,
+            file,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=404,
+            detail=str(e),
+        )
 
     background_tasks.add_task(
         process_file_background,

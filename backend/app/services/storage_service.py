@@ -1,25 +1,22 @@
+import hashlib
 import shutil
 import uuid
 from pathlib import Path
 
 from fastapi import UploadFile
-
-from app.utils.file_utils import UPLOAD_DIR
-
-import hashlib
-
 from sqlalchemy.orm import Session
 
 from app.models.file import File
 from app.services.activity_service import create_activity
+from app.utils.file_utils import UPLOAD_DIR
 
 
 def save_file(upload_file: UploadFile):
     extension = Path(upload_file.filename).suffix
 
-    generated_name = f"{uuid.uuid4()}{extension}"
+    stored_name = f"{uuid.uuid4()}{extension}"
 
-    destination = UPLOAD_DIR / generated_name
+    destination = UPLOAD_DIR / stored_name
 
     with destination.open("wb") as buffer:
         shutil.copyfileobj(
@@ -27,7 +24,9 @@ def save_file(upload_file: UploadFile):
             buffer,
         )
 
-    return generated_name
+    file_size = destination.stat().st_size
+
+    return stored_name, file_size
 
 
 def process_uploaded_file(
@@ -43,9 +42,9 @@ def process_uploaded_file(
     if file is None:
         return
 
-    file_path = UPLOAD_DIR / file.s3_key
+    path = UPLOAD_DIR / file.s3_key
 
-    with file_path.open("rb") as f:
+    with path.open("rb") as f:
         checksum = hashlib.md5(
             f.read()
         ).hexdigest()
