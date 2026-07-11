@@ -37,7 +37,7 @@ export default function FolderForm({
             />
 
             <button
-                className="rounded-lg bg-blue-600 px-5 text-white"
+                className="rounded-lg bg-blue-600 px-5 text-white cursor-pointer"
             >
                 {submitText}
             </button>

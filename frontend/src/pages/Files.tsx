@@ -84,7 +84,7 @@ export default function Files() {
                 />
 
                 <button
-                    className="rounded-lg bg-blue-600 px-6 text-white"
+                    className="rounded-lg bg-blue-600 px-6 text-white cursor-pointer"
                     onClick={handleSearch}
                 >
                     Search

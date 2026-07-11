@@ -17,6 +17,10 @@ export default function FolderCard({
                 {folder.name}
             </h3>
 
+            <p className="text-sm text-gray-500">
+                folder id: {folder.id}
+            </p>
+
             <p className="mt-2 text-sm text-gray-500">
                 Created:
                 {" "}
@@ -28,14 +32,14 @@ export default function FolderCard({
             <div className="mt-5 flex gap-3">
                 <button
                     onClick={onRename}
-                    className="rounded bg-yellow-500 px-4 py-2 text-white"
+                    className="rounded bg-yellow-500 px-4 py-2 text-white cursor-pointer"
                 >
                     Rename
                 </button>
 
                 <button
                     onClick={onDelete}
-                    className="rounded bg-red-600 px-4 py-2 text-white"
+                    className="rounded bg-red-600 px-4 py-2 text-white cursor-pointer"
                 >
                     Delete
                 </button>

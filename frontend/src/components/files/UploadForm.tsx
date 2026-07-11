@@ -36,13 +36,29 @@ export default function UploadForm({
         <div className="rounded-lg border bg-white p-5">
             <div className="grid gap-4 md:grid-cols-3">
                 <select
-                    className="rounded border p-3"
                     value={folderId}
                     onChange={(e) =>
-                        setFolderId(
-                            e.target.value,
-                        )
+                        setFolderId(e.target.value)
                     }
+                    className="
+                        w-full
+                        rounded-lg
+                        border
+                        border-gray-300
+                        bg-white
+                        px-4
+                        py-2.5
+                        text-sm
+                        text-gray-700
+                        shadow-sm
+                        transition
+                        outline-none
+                        focus:border-blue-500
+                        focus:ring-2
+                        focus:ring-blue-500/20
+                        disabled:cursor-not-allowed
+                        disabled:opacity-50
+                    "
                 >
                     {folders.map((folder) => (
                         <option
@@ -57,15 +73,27 @@ export default function UploadForm({
                 <input
                     type="file"
                     onChange={(e) =>
-                        setFile(
-                            e.target.files?.[0] ??
-                                null,
-                        )
+                        setFile(e.target.files?.[0] ?? null)
                     }
+                    className="
+                        block w-full text-sm text-gray-600
+                        file:mr-4
+                        file:rounded-lg
+                        file:border-0
+                        file:bg-blue-600
+                        file:px-4
+                        file:py-2
+                        file:text-sm
+                        file:font-medium
+                        file:text-white
+                        hover:file:bg-blue-700
+                        file:cursor-pointer
+                        cursor-pointer
+                    "
                 />
 
                 <button
-                    className="rounded bg-blue-600 text-white"
+                    className="rounded bg-blue-600 text-white cursor-pointer"
                     onClick={() => {
                         if (
                             !folderId ||
