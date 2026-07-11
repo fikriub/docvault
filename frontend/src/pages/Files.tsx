@@ -4,6 +4,7 @@ import {
     deleteFile,
     getFiles,
     renameFile,
+    searchFiles,
     uploadFile,
 } from "../api/files";
 
@@ -19,6 +20,9 @@ export default function Files() {
     const [files, setFiles] =
         useState<FileItem[]>([]);
 
+    const [keyword, setKeyword] =
+        useState("");
+
     const [loading, setLoading] =
         useState(true);
 
@@ -26,6 +30,21 @@ export default function Files() {
         setLoading(true);
 
         getFiles()
+            .then(setFiles)
+            .finally(() =>
+                setLoading(false),
+            );
+    };
+
+    const handleSearch = async () => {
+        if (!keyword.trim()) {
+            loadFiles();
+            return;
+        }
+
+        setLoading(true);
+
+        searchFiles(keyword)
             .then(setFiles)
             .finally(() =>
                 setLoading(false),
@@ -50,6 +69,26 @@ export default function Files() {
                 <p className="mt-2 text-gray-500">
                     Manage your uploaded files.
                 </p>
+            </div>
+
+            <div className="flex gap-3">
+                <input
+                    className="flex-1 rounded-lg border p-3"
+                    placeholder="Search file..."
+                    value={keyword}
+                    onChange={(e) =>
+                        setKeyword(
+                            e.target.value,
+                        )
+                    }
+                />
+
+                <button
+                    className="rounded-lg bg-blue-600 px-6 text-white"
+                    onClick={handleSearch}
+                >
+                    Search
+                </button>
             </div>
 
             <UploadForm

@@ -45,3 +45,18 @@ export const uploadFile = async (
 
     return response.data;
 };
+
+export const searchFiles = async (
+    keyword: string,
+) => {
+    const response = await api.get(
+        "/files/search",
+        {
+            params: {
+                q: keyword,
+            },
+        },
+    );
+
+    return response.data;
+};
