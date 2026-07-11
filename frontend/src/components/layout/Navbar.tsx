@@ -1,9 +1,13 @@
 export default function Navbar() {
     return (
-        <header className="h-16 border-b bg-white flex items-center px-6">
-            <h1 className="text-xl font-semibold">
-                DocVault
-            </h1>
+        <header className="flex h-16 items-center justify-between border-b bg-white px-8">
+            <h2 className="text-xl font-semibold">
+                Document Management
+            </h2>
+
+            <span className="text-sm text-gray-500">
+                Local Storage
+            </span>
         </header>
     );
 }
