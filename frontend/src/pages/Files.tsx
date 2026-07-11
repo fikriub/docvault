@@ -1,7 +1,115 @@
+import { useEffect, useState } from "react";
+
+import {
+    deleteFile,
+    getFiles,
+    renameFile,
+    uploadFile,
+} from "../api/files";
+
+import Loading from "../components/common/Loading";
+import EmptyState from "../components/common/EmptyState";
+
+import UploadForm from "../components/files/UploadForm";
+import FileCard from "../components/files/FileCard";
+
+import type { FileItem } from "../types/file";
+
 export default function Files() {
+    const [files, setFiles] =
+        useState<FileItem[]>([]);
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const loadFiles = () => {
+        setLoading(true);
+
+        getFiles()
+            .then(setFiles)
+            .finally(() =>
+                setLoading(false),
+            );
+    };
+
+    useEffect(() => {
+        loadFiles();
+    }, []);
+
+    if (loading) {
+        return <Loading />;
+    }
+
     return (
-        <div>
-            Files
+        <div className="space-y-8">
+            <div>
+                <h1 className="text-3xl font-bold">
+                    Files
+                </h1>
+
+                <p className="mt-2 text-gray-500">
+                    Manage your uploaded files.
+                </p>
+            </div>
+
+            <UploadForm
+                onUpload={async (
+                    folderId,
+                    file,
+                ) => {
+                    await uploadFile(
+                        folderId,
+                        file,
+                    );
+
+                    loadFiles();
+                }}
+            />
+
+            {files.length === 0 ? (
+                <EmptyState title="No files found." />
+            ) : (
+                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                    {files.map((file) => (
+                        <FileCard
+                            key={file.id}
+                            file={file}
+                            onRename={async () => {
+                                const name =
+                                    window.prompt(
+                                        "New filename",
+                                        file.filename,
+                                    );
+
+                                if (!name)
+                                    return;
+
+                                await renameFile(
+                                    file.id,
+                                    name,
+                                );
+
+                                loadFiles();
+                            }}
+                            onDelete={async () => {
+                                const ok =
+                                    window.confirm(
+                                        `Delete "${file.filename}"?`,
+                                    );
+
+                                if (!ok)
+                                    return;
+
+                                await deleteFile(
+                                    file.id,
+                                );
+
+                                loadFiles();
+                            }}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
