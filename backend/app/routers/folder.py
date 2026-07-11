@@ -17,6 +17,10 @@ from app.services.folder_service import (
     update_folder,
 )
 
+from app.services.file_service import get_files_by_folder
+
+from app.schemas.file import FileResponse
+
 router = APIRouter(
     prefix="/api/folders",
     tags=["Folders"],
@@ -31,6 +35,21 @@ def list_folders(
     db: Session = Depends(get_db),
 ):
     return get_all_folders(db)
+
+
+@router.get(
+    "/{folder_id}/files",
+    response_model=list[FileResponse],
+)
+def get_folder_files(
+    folder_id: UUID,
+    db: Session = Depends(get_db),
+):
+    return get_files_by_folder(
+        db,
+        folder_id,
+    )
+
 
 
 @router.get(

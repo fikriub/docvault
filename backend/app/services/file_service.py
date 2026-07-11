@@ -142,3 +142,14 @@ def file_exists(file: File):
     path = Path("uploads") / file.stored_filename
 
     return path.exists()
+
+def get_files_by_folder(
+    db: Session,
+    folder_id: UUID,
+):
+    return (
+        db.query(File)
+        .filter(File.folder_id == folder_id)
+        .order_by(File.filename.asc())
+        .all()
+    )
