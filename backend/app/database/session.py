@@ -2,14 +2,14 @@ from sqlalchemy.orm import sessionmaker
 
 from app.database.connection import engine
 
-Sessionlocal = sessionmaker(
+SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine,
 )
 
 def get_db():
-    db = Sessionlocal()
+    db = SessionLocal()
 
     try:
         yield db
