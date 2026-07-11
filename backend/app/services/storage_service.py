@@ -43,7 +43,7 @@ def process_uploaded_file(
     if file is None:
         return
 
-    path = UPLOAD_DIR / file.s3_key
+    path = UPLOAD_DIR / file.stored_filename
 
     with path.open("rb") as f:
         checksum = hashlib.md5(
@@ -68,7 +68,7 @@ def build_file_response(
     file: File,
     inline: bool = False,
 ):
-    path = get_file_path(file.s3_key)
+    path = get_file_path(file.stored_filename)
 
     if inline:
         disposition = "inline"

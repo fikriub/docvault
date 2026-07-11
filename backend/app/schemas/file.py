@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict
 class FileCreate(BaseModel):
     folder_id: UUID
     filename: str
-    s3_key: str
+    stored_filename: str
     size: int
     mime_type: str
     checksum: str
@@ -23,7 +23,7 @@ class FileUploadResponse(BaseModel):
     id: UUID
     folder_id: UUID
     filename: str
-    s3_key: str
+    stored_filename: str
     size: int
     mime_type: str
     checksum: str
@@ -38,7 +38,7 @@ class FileResponse(BaseModel):
     id: UUID
     folder_id: UUID
     filename: str
-    s3_key: str
+    stored_filename: str
     size: int
     mime_type: str
     checksum: str

@@ -47,7 +47,7 @@ def create_file(db: Session, data: FileCreate):
     file = File(
         folder_id=data.folder_id,
         filename=data.filename,
-        s3_key=data.s3_key,
+        stored_filename=data.stored_filename,
         size=data.size,
         mime_type=data.mime_type,
         checksum=data.checksum,
@@ -120,7 +120,7 @@ def upload_file(
     file = File(
         folder_id=folder_id,
         filename=upload.filename,
-        s3_key=stored_name,
+        stored_filename=stored_name,
         size=file_size,
         mime_type=upload.content_type or "application/octet-stream",
         checksum="",
@@ -139,6 +139,6 @@ def upload_file(
     return file
 
 def file_exists(file: File):
-    path = Path("uploads") / file.s3_key
+    path = Path("uploads") / file.stored_filename
 
     return path.exists()

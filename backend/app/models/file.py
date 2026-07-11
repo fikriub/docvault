@@ -29,7 +29,7 @@ class File(Base):
         nullable=False,
     )
 
-    s3_key: Mapped[str] = mapped_column(
+    stored_filename: Mapped[str] = mapped_column(
         String(500),
         nullable=False,
     )
