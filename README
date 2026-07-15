@@ -1,0 +1,140 @@
+# 📁 DocVault
+
+> A modern full-stack document management application built with **FastAPI**, **React**, and **PostgreSQL**.
+
+DocVault is a simple yet production-oriented document management system that allows users to upload, download, and manage files through a clean web interface. The project focuses on building a complete full-stack application with modern development practices while keeping the architecture easy to understand.
+
+---
+
+## ✨ Features
+
+- 📤 Upload documents
+- 🔍 Search documents
+- ⬇️ Download documents
+- 🗑️ Delete documents
+- 🎨 Modern responsive UI
+- 🔄 RESTful API
+- 🗄️ PostgreSQL database
+- ⚡ FastAPI backend
+- ⚛️ React + Vite frontend
+
+---
+
+# 🏗️ Architecture
+
+```
+                React + Vite
+                     │
+              REST API (HTTP)
+                     │
+                FastAPI Backend
+                     │
+        SQLAlchemy + Alembic
+                     │
+               PostgreSQL Database
+                     │
+              Local File Storage
+```
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- React
+- Vite
+- TypeScript
+- Tailwind CSS
+- Axios
+- React Router
+
+## Backend
+
+- FastAPI
+- SQLAlchemy
+- Alembic
+- Pydantic
+- Uvicorn
+
+## Database
+
+- PostgreSQL
+
+## Storage
+
+- Local File Storage
+
+## Development
+
+- Git
+
+---
+
+# 📡 REST API
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/documents` | Get all documents |
+| POST | `/documents/upload` | Upload document |
+| GET | `/documents/{id}` | Get document |
+| GET | `/documents/{id}/download` | Download document |
+| DELETE | `/documents/{id}` | Delete document |
+| GET | `/folders` | Get folders |
+| POST | `/folders` | Create folder |
+
+---
+
+# 🗄️ Database
+
+Main tables
+
+- documents
+- folders
+
+Each document stores:
+
+- filename
+- original filename
+- file size
+- MIME type
+- storage path
+- upload date
+- folder relation
+
+---
+
+# 🎯 Learning Objectives
+
+This project demonstrates how to build a complete full-stack application using modern technologies, including:
+
+- REST API development with FastAPI
+- PostgreSQL database design
+- SQLAlchemy ORM
+- Alembic database migrations
+- React with TypeScript
+- File upload handling
+- Responsive UI development
+- Clean project architecture
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+# 👨‍💻 Author
+
+**Fikriub**
+
+Software Engineer passionate about building scalable backend systems, modern web applications, and developer-friendly tools.
+
+GitHub: **https://github.com/fikriub**
+
+---
+
+## ⭐ Support
+
+If you found this project helpful, consider giving it a **Star ⭐** on GitHub!
